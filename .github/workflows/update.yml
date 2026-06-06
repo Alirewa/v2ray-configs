@@ -5,16 +5,21 @@ on:
     branches:
       - main
   schedule:
-    # هر ۱۵ دقیقه یک بار اجرا می‌شود
     - cron: "*/15 * * * *"
-  workflow_dispatch: # امکان اجرای دستی از GitHub UI
+  workflow_dispatch:
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
+    timeout-minutes: 12
 
     permissions:
       contents: write
+
+    env:
+      # Opt into Node.js 24 for all JS actions (avoids deprecation errors after June 2026)
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      PYTHONUNBUFFERED: "1"
 
     steps:
       - name: Checkout repository
@@ -37,7 +42,7 @@ jobs:
       - name: Commit and push updated configs
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "🔄 auto-update configs [$(date +'%Y-%m-%d %H:%M')]"
+          commit_message: "🔄 auto-update configs"
           file_pattern: config.txt
-          commit_user_name: "GitHub Actions Bot"
-          commit_user_email: "actions@github.com"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"

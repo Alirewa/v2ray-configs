@@ -1,9 +1,33 @@
+"""
+V2Ray Config Aggregator
+Fetches vmess/vless/ss/trojan configs from:
+  - 180+ public Telegram channel web-previews
+  - Top GitHub aggregator repos (raw subscription files)
+Deduplicates and writes to config.txt every 15 minutes via GitHub Actions.
+"""
+
+import re
 import requests
 from bs4 import BeautifulSoup
 import pytz
 import jdatetime
 
-SOURCES = [
+# ── Constants ────────────────────────────────────────────────────────────────
+
+SCHEMES = ("vmess://", "vless://", "ss://", "trojan://")
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept-Language": "en-US,en;q=0.9",
+}
+
+# ── Telegram Sources (public web-preview pages) ───────────────────────────────
+
+TELEGRAM_SOURCES = [
     "https://t.me/s/Awlix_ir",
     "https://t.me/s/beiten",
     "https://t.me/s/beta_v2ray",
@@ -155,74 +179,217 @@ SOURCES = [
     "https://t.me/s/lexernet",
     "https://t.me/s/AblNet7",
     "https://t.me/s/manzariyeh_rasht",
+    # ── New additions ──────────────────────────────────────────────────────────
+    "https://t.me/s/free_v2rayyy",
+    "https://t.me/s/v2ray_free_conf",
+    "https://t.me/s/V2RayFreeConfig",
+    "https://t.me/s/VPN_Beast",
+    "https://t.me/s/vpn_alex",
+    "https://t.me/s/xray_config",
+    "https://t.me/s/xrayconfigs",
+    "https://t.me/s/HiN_VPN",
+    "https://t.me/s/VmessVpn",
+    "https://t.me/s/FreeV2rayConfigs",
+    "https://t.me/s/v2rayng_config",
+    "https://t.me/s/iranv2ray",
+    "https://t.me/s/v2rayiranserver",
+    "https://t.me/s/free_proxy_configs",
+    "https://t.me/s/Freev2ray_ir",
+    "https://t.me/s/v2ray_everyday",
+    "https://t.me/s/VPN_Free_Pro",
+    "https://t.me/s/VpnProSub",
+    "https://t.me/s/TrojanVpnConfig",
+    "https://t.me/s/trojanconfigs",
+    "https://t.me/s/ShadowsocksConfig",
+    "https://t.me/s/v2ray_iran",
+    "https://t.me/s/configs_v2ray",
+    "https://t.me/s/FREE_V2RAY_CONFIG",
+    "https://t.me/s/FreeVPN_io",
+    "https://t.me/s/IranianVpn",
+    "https://t.me/s/OutlineConfig",
+    "https://t.me/s/VPNHouse",
+    "https://t.me/s/custom_configs",
+    "https://t.me/s/frv2ray",
+    "https://t.me/s/V2rayFreeServer",
 ]
 
-SCHEMES = ("vmess://", "vless://", "ss://", "trojan://")
+# ── GitHub Raw Sources (plain-text subscription files, one config per line) ───
 
-HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/120.0.0.0 Safari/537.36"
-    )
-}
+GITHUB_SOURCES = [
+    # barry-far — large daily aggregator
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/All_Configs_Sub.txt",
+    # mahdibland — split by protocol
+    "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/splitted/vmess.txt",
+    "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/splitted/vless.txt",
+    "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/splitted/trojan.txt",
+    "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/splitted/shadowsocks.txt",
+    # soroushmirzaei — telegram collector
+    "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/splitted/mixed",
+    # freefq / free
+    "https://raw.githubusercontent.com/freefq/free/master/v2",
+    # aiboboxx
+    "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
+    # Pawdroid
+    "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
+    # peasoft
+    "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt",
+    # tbbatbb
+    "https://raw.githubusercontent.com/tbbatbb/Proxy/master/dist/v2ray.config.txt",
+    # mfuu
+    "https://raw.githubusercontent.com/mfuu/v2ray/master/v2ray.txt",
+    # 1-stream
+    "https://raw.githubusercontent.com/1-stream/1stream-public-utils/main/stream.list",
+    # ermaozi
+    "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt",
+    # Surfboardv2ray
+    "https://raw.githubusercontent.com/Surfboardv2ray/v2ray-worker-sub/master/Eternity",
+    # LalehHas
+    "https://raw.githubusercontent.com/LalehHas/v2ray_config_file/main/v2ray_configs.txt",
+    # Barabama
+    "https://raw.githubusercontent.com/Barabama/FreeNodes/master/nodes/merged.txt",
+    # resasanian
+    "https://raw.githubusercontent.com/resasanian/Mirza/main/best",
+    # MhdiTaheri
+    "https://raw.githubusercontent.com/MhdiTaheri/V2rayCollector/main/vless.txt",
+    "https://raw.githubusercontent.com/MhdiTaheri/V2rayCollector/main/vmess.txt",
+    "https://raw.githubusercontent.com/MhdiTaheri/V2rayCollector/main/trojan.txt",
+    # ALIILAPRO
+    "https://raw.githubusercontent.com/ALIILAPRO/v2rayNG-Config/main/server.txt",
+]
 
+# ── Helpers ───────────────────────────────────────────────────────────────────
 
-def fetch_page(url: str) -> str:
+def _get(url: str) -> str:
+    """Fetch a URL; return empty string on any error."""
     try:
-        r = requests.get(url.strip(), headers=HEADERS, timeout=15)
+        r = requests.get(url.strip(), headers=HEADERS, timeout=20)
         r.raise_for_status()
         return r.text
     except Exception as e:
-        print(f"[SKIP] {url} — {e}")
+        print(f"  [SKIP] {url.split('/')[-1][:40]} — {e}")
         return ""
 
 
-def extract_configs(html: str) -> list[str]:
+def _clean(line: str) -> str:
+    """Strip the #comment fragment and surrounding whitespace."""
+    return line.split("#")[0].rstrip()
+
+
+def _is_valid(cfg: str) -> bool:
+    """Basic sanity check — must start with a known scheme and have some length."""
+    return any(cfg.startswith(s) for s in SCHEMES) and len(cfg) > 20
+
+
+# ── Scrapers ──────────────────────────────────────────────────────────────────
+
+def scrape_telegram(url: str) -> list[str]:
+    """Parse <code> blocks from a Telegram web-preview page."""
+    html = _get(url)
+    if not html:
+        return []
     soup = BeautifulSoup(html, "html.parser")
     results = []
     for tag in soup.find_all("code"):
-        text = tag.get_text(separator="\n").strip()
-        for line in text.splitlines():
-            line = line.strip()
+        for raw_line in tag.get_text(separator="\n").splitlines():
+            line = raw_line.strip()
             if any(line.startswith(s) for s in SCHEMES):
-                # Strip the comment/label fragment (#...) at the end
-                clean = line.split("#")[0].rstrip()
-                if clean:
-                    results.append(clean)
+                cfg = _clean(line)
+                if _is_valid(cfg):
+                    results.append(cfg)
     return results
 
+
+def fetch_raw(url: str) -> list[str]:
+    """
+    Parse a plain-text subscription file.
+    Handles both raw-per-line files and base64-encoded subscription blobs.
+    """
+    text = _get(url)
+    if not text:
+        return []
+
+    # Try base64 decode first (common subscription format)
+    stripped = text.strip()
+    if not any(stripped.startswith(s) for s in SCHEMES):
+        try:
+            import base64
+            decoded = base64.b64decode(stripped + "==").decode("utf-8", errors="ignore")
+            if any(decoded.startswith(s) for s in SCHEMES) or any(f"\n{s}" in decoded for s in SCHEMES):
+                text = decoded
+        except Exception:
+            pass  # not base64, treat as plain text
+
+    results = []
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if any(line.startswith(s) for s in SCHEMES):
+            cfg = _clean(line)
+            if _is_valid(cfg):
+                results.append(cfg)
+    return results
+
+
+# ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
     all_configs: list[str] = []
 
-    for url in SOURCES:
-        html = fetch_page(url)
-        if html:
-            found = extract_configs(html)
-            print(f"[OK] {url.split('/')[-1]:30s} → {len(found)} configs")
+    print(f"\n{'='*55}")
+    print(f" Fetching from {len(TELEGRAM_SOURCES)} Telegram channels...")
+    print(f"{'='*55}")
+    tg_total = 0
+    for url in TELEGRAM_SOURCES:
+        found = scrape_telegram(url)
+        if found:
+            tg_total += len(found)
             all_configs.extend(found)
+            print(f"  ✓ {url.split('/')[-1]:35s} {len(found):>4} configs")
 
-    # Deduplicate while preserving first-seen order
+    print(f"\n{'='*55}")
+    print(f" Fetching from {len(GITHUB_SOURCES)} GitHub sources...")
+    print(f"{'='*55}")
+    gh_total = 0
+    for url in GITHUB_SOURCES:
+        found = fetch_raw(url)
+        if found:
+            gh_total += len(found)
+            all_configs.extend(found)
+            label = "/".join(url.split("/")[3:5])
+            print(f"  ✓ {label:35s} {len(found):>5} configs")
+
+    # ── Deduplicate (preserve first-seen order) ────────────────────────────────
     seen: set[str] = set()
     unique: list[str] = []
-    for c in all_configs:
-        if c not in seen:
-            seen.add(c)
-            unique.append(c)
+    for cfg in all_configs:
+        if cfg not in seen:
+            seen.add(cfg)
+            unique.append(cfg)
 
+    # ── Timestamp ─────────────────────────────────────────────────────────────
     now = jdatetime.datetime.now(pytz.timezone("Asia/Tehran"))
     date_str = now.strftime("%Y/%m/%d")
     time_str = now.strftime("%H:%M")
-    header = f"# به‌روزرسانی: {date_str} ساعت {time_str} | {len(unique)} کانفیگ"
+
+    # ── Write output ──────────────────────────────────────────────────────────
+    header = (
+        f"# ✅ به‌روزرسانی: {date_str} ساعت {time_str} | {len(unique)} کانفیگ یکتا\n"
+        f"# 📡 منابع: {len(TELEGRAM_SOURCES)} کانال تلگرام + {len(GITHUB_SOURCES)} ریپوی گیتهاب\n"
+        f"# 🔗 سابسکریپشن: https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/config.txt\n"
+    )
 
     with open("config.txt", "w", encoding="utf-8") as f:
-        f.write(header + "\n")
+        f.write(header)
         for i, cfg in enumerate(unique, start=1):
-            label = f"#{i} | {date_str}"
+            label = f"#{i}-{date_str}"
             f.write(f"{cfg}{label}\n")
 
-    print(f"\n✅ {len(unique)} unique configs saved to config.txt")
+    print(f"\n{'='*55}")
+    print(f" ✅ Done!")
+    print(f"    Telegram  : {tg_total:>6} raw  →  after dedup")
+    print(f"    GitHub    : {gh_total:>6} raw")
+    print(f"    Total raw : {len(all_configs):>6}")
+    print(f"    Unique    : {len(unique):>6}  →  saved to config.txt")
+    print(f"{'='*55}\n")
 
 
 if __name__ == "__main__":
