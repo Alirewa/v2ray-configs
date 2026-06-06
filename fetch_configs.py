@@ -219,44 +219,48 @@ TELEGRAM_SOURCES = [
 
 GITHUB_SOURCES = [
     # barry-far — large daily aggregator
-    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/All_Configs_Sub.txt",
-    # mahdibland — split by protocol
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub1.txt",
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub2.txt",
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub3.txt",
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub4.txt",
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub5.txt",
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub6.txt",
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub7.txt",
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub8.txt",
+    # mahdibland — confirmed working paths
     "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/splitted/vmess.txt",
-    "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/splitted/vless.txt",
     "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/splitted/trojan.txt",
-    "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/splitted/shadowsocks.txt",
-    # soroushmirzaei — telegram collector
-    "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/splitted/mixed",
     # freefq / free
     "https://raw.githubusercontent.com/freefq/free/master/v2",
-    # aiboboxx
-    "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
     # Pawdroid
     "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
-    # peasoft
+    # peasoft — NoMoreWalls
     "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt",
-    # tbbatbb
-    "https://raw.githubusercontent.com/tbbatbb/Proxy/master/dist/v2ray.config.txt",
-    # mfuu
-    "https://raw.githubusercontent.com/mfuu/v2ray/master/v2ray.txt",
-    # 1-stream
-    "https://raw.githubusercontent.com/1-stream/1stream-public-utils/main/stream.list",
     # ermaozi
     "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt",
     # Surfboardv2ray
     "https://raw.githubusercontent.com/Surfboardv2ray/v2ray-worker-sub/master/Eternity",
-    # LalehHas
-    "https://raw.githubusercontent.com/LalehHas/v2ray_config_file/main/v2ray_configs.txt",
     # Barabama
     "https://raw.githubusercontent.com/Barabama/FreeNodes/master/nodes/merged.txt",
-    # resasanian
+    # resasanian — Mirza
     "https://raw.githubusercontent.com/resasanian/Mirza/main/best",
-    # MhdiTaheri
-    "https://raw.githubusercontent.com/MhdiTaheri/V2rayCollector/main/vless.txt",
-    "https://raw.githubusercontent.com/MhdiTaheri/V2rayCollector/main/vmess.txt",
-    "https://raw.githubusercontent.com/MhdiTaheri/V2rayCollector/main/trojan.txt",
     # ALIILAPRO
     "https://raw.githubusercontent.com/ALIILAPRO/v2rayNG-Config/main/server.txt",
+    # soroushmirzaei — configs collector (correct path)
+    "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/channels/protocols/vless",
+    "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/channels/protocols/vmess",
+    "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/channels/protocols/trojan",
+    "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/channels/protocols/shadowsocks",
+    # coldwater — daily configs
+    "https://raw.githubusercontent.com/coldwater-10/V2Hub/main/split/vless",
+    "https://raw.githubusercontent.com/coldwater-10/V2Hub/main/split/vmess",
+    "https://raw.githubusercontent.com/coldwater-10/V2Hub/main/split/trojan",
+    # Epodonios
+    "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",
+    # yebekhe — TelegramV2rayCollector
+    "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/mix",
+    # mahdibland SplitV2Ray
+    "https://raw.githubusercontent.com/mahdibland/ShadowsocksAggregator/master/Eternity.txt",
 ]
 
 # ── Helpers ───────────────────────────────────────────────────────────────────

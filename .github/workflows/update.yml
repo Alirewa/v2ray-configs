@@ -18,13 +18,11 @@ jobs:
       PYTHONUNBUFFERED: "1"
 
     steps:
-      - name: Checkout repository
+      - name: Checkout latest main
         uses: actions/checkout@v4
         with:
-          # Full history needed so push doesn't get rejected
-          fetch-depth: 0
-          # Always get the latest state from remote before we do anything
           ref: main
+          fetch-depth: 1
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
@@ -40,21 +38,25 @@ jobs:
       - name: Run scraper
         run: python fetch_configs.py
 
-      - name: Commit and push updated configs
+      - name: Commit and push
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git add config.txt
 
-          # Nothing changed → skip
+          # Nothing changed → skip commit entirely
           if git diff --cached --quiet; then
-            echo "No changes to commit."
+            echo "⏭ No changes — skipping commit."
             exit 0
           fi
 
           git commit -m "🔄 auto-update configs"
 
-          # Pull remote changes (rebase) then push — avoids non-fast-forward errors
-          git pull --rebase origin main
-          git push origin main
+          # Push — if rejected (another run beat us), rebase with our version winning
+          git push origin main || {
+            echo "⚠ Push rejected — rebasing with our config.txt..."
+            git fetch origin main
+            git rebase -X theirs origin/main
+            git push origin main
+          }
