@@ -478,21 +478,36 @@ def main():
     if len(unique) > MAX_CONFIGS:
         unique = unique[:MAX_CONFIGS]
 
-    # ── Score and sort for sub files (top-quality subset) ─────────────────────
+    # ── Score all configs — best first ───────────────────────────────────────
+    # Sort by score descending; preserve original order for ties (stable sort)
     scored = sorted(unique, key=_health_score, reverse=True)
-    top300 = scored[:300]   # pool for the three sub files
 
     # ── Write main config.txt (raw, no comments) ──────────────────────────────
     with open("config.txt", "w", encoding="utf-8") as f:
         for i, cfg in enumerate(unique, start=1):
             f.write(f"{cfg}#@Alirewa - #{i}\n")
 
-    # ── Write sub1 / sub2 / sub3 (100 configs each, healthiest first) ─────────
-    for idx, (fname, pool) in enumerate([
-        ("sub1.txt", top300[0:100]),
-        ("sub2.txt", top300[100:200]),
-        ("sub3.txt", top300[200:300]),
-    ], start=1):
+    # ── Write sub1 / sub2 / sub3 (100 each, drawn from the scored list) ───────
+    # Always fill to 100: if scored pool runs short, pad from the remainder of unique
+    used: set[str] = set()
+    sub_pools: list[list[str]] = []
+    for _ in range(3):
+        pool: list[str] = []
+        for cfg in scored:
+            if cfg not in used and len(pool) < 100:
+                pool.append(cfg)
+                used.add(cfg)
+        # If scored list exhausted, fill from unsorted unique
+        if len(pool) < 100:
+            for cfg in unique:
+                if cfg not in used and len(pool) < 100:
+                    pool.append(cfg)
+                    used.add(cfg)
+        sub_pools.append(pool)
+
+    for idx, (fname, pool) in enumerate(
+        zip(["sub1.txt", "sub2.txt", "sub3.txt"], sub_pools), start=1
+    ):
         with open(fname, "w", encoding="utf-8") as f:
             for i, cfg in enumerate(pool, start=1):
                 f.write(f"{cfg}#@Alirewa - Sub{idx} #{i}\n")
