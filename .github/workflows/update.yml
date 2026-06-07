@@ -2,7 +2,8 @@ name: Fetch V2Ray Configs
 
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "0 * * * *"   # top of every hour
+    - cron: "30 * * * *"  # half past every hour
   workflow_dispatch:
 
 jobs:
@@ -15,7 +16,6 @@ jobs:
 
     env:
       PYTHONUNBUFFERED: "1"
-      # Force Node.js 24 for all JS-based actions (eliminates Node20 deprecation warning)
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
     steps:
@@ -46,7 +46,6 @@ jobs:
 
           git add config.txt
 
-          # Nothing changed → skip commit entirely
           if git diff --cached --quiet; then
             echo "No changes — skipping commit."
             exit 0
@@ -54,9 +53,7 @@ jobs:
 
           git commit -m "🔄 auto-update configs"
 
-          # Push — if rejected (race condition), rebase with our version winning
           git push origin main || {
-            echo "Push rejected — rebasing..."
             git fetch origin main
             git rebase -X theirs origin/main
             git push origin main

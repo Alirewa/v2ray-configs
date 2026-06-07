@@ -1,8 +1,8 @@
-# 🔒 Free V2Ray Configs — Auto-Updated Every 15 Minutes
+# 🔒 Free V2Ray Configs — Auto-Updated Every 30 Minutes
 
-> **Free, fresh V2Ray / Xray subscription link** — 1000+ configs collected automatically
-> every 15 minutes from 180+ Telegram channels and top GitHub aggregators.
-> No login. No ads. Just copy the link below.
+> **Free, fresh, and ready-to-use V2Ray subscription links** — updated automatically
+> every 30 minutes from 180+ Telegram channels and verified GitHub sources.
+> Pure raw output — compatible with any V2Ray client or Telegram bot.
 
 ---
 
@@ -12,60 +12,7 @@
 https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/config.txt
 ```
 
-> Paste this URL directly into your V2Ray / Xray client as a **subscription**.
-
----
-
-## 📋 Supported Protocols
-
-| Protocol | Notes |
-|----------|-------|
-| `vmess://` | Original V2Ray protocol — widely supported |
-| `vless://` | Lightweight, no encryption overhead |
-| `trojan://` | Disguised as HTTPS — hard to detect |
-| `ss://`    | Shadowsocks — fast and battle-tested |
-
----
-
-## 📱 How to Use
-
-### Android — V2RayNG
-1. Open **V2RayNG** → ☰ menu → *Subscription group settings*
-2. Tap **+** → paste the subscription URL → Save
-3. Back to main → ☰ menu → *Update subscription*
-4. Pick a server and tap ▶
-
-### iOS — Shadowrocket / Streisand
-1. Tap **+** → Type: *Subscribe*
-2. Paste the URL → Save → Tap *Update*
-
-### Windows / macOS — V2RayN / Hiddify / Nekoray
-1. **Servers** → *Add subscription*
-2. Paste the URL → OK → Right-click → *Update*
-
-### Linux / CLI
-```bash
-curl -s https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/config.txt | head -30
-```
-
----
-
-## 🔄 How It Works
-
-```
-Telegram Channels (180+)  ──┐
-                             ├──▶  fetch_configs.py  ──▶  config.txt
-GitHub Aggregator Repos  ───┘            ↑
-                                  GitHub Actions
-                                  (every 15 min)
-```
-
-- **GitHub Actions** runs on a `*/15 * * * *` cron schedule
-- Scrapes 180+ public Telegram channel web-previews (`t.me/s/...`)
-- Pulls from 20+ GitHub v2ray aggregator repositories
-- Deduplicates all configs (no repeats)
-- Writes clean output to `config.txt` with Jalali timestamps
-- Auto-commits back to this repo — always fresh
+> One config per line. No headers. Directly usable as a subscription URL.
 
 ---
 
@@ -73,30 +20,92 @@ GitHub Aggregator Repos  ───┘            ↑
 
 | Item | Value |
 |------|-------|
-| 🔁 Update interval | Every **15 minutes** |
-| 📡 Telegram sources | **180+** channels |
-| 🐙 GitHub sources | **20+** aggregator repos |
-| 🔑 Config count | **1000+** unique configs per update |
-| 🆓 Cost | **Free** — forever |
+| 🔄 Update interval | Every 30 minutes |
+| 📡 Sources | 180+ Telegram channels + 20 GitHub repos |
+| 🔢 Max configs | 2,000 (after full deduplication) |
+| 🧹 Dedup method | Exact string + UUID/identifier matching |
+| 📄 Output format | Raw — one config per line |
+| 🆓 Cost | Free forever (GitHub Actions) |
 
 ---
 
-## 🔍 Tags
+## 📋 Supported Protocols
 
-`v2ray config` `free v2ray subscription` `vless config free` `vmess config free`
-`trojan config` `v2ray sub link` `shadowsocks free` `v2rayNG subscription`
-`free vpn config 2025` `v2ray subscription url` `xray config free` `free proxy`
-`v2ray free server` `vless free server` `vmess free server` `trojan free server`
-`v2ray daily` `v2ray iran` `کانفیگ رایگان` `سابسکریپشن v2ray` `کانفیگ vless رایگان`
-`فیلترشکن رایگان` `کانفیگ vmess` `لینک سابسکریپشن`
+| Protocol | Format |
+|----------|--------|
+| VLESS | `vless://UUID@host:port?...#name` |
+| VMess | `vmess://base64encodedJSON#name` |
+| Trojan | `trojan://password@host:port#name` |
+| Shadowsocks | `ss://base64@host:port#name` |
+
+---
+
+## 📱 How to Use
+
+### Android — V2RayNG
+1. Open V2RayNG → **☰** → **Subscription group settings**
+2. Tap **+** → paste the URL above → Save
+3. **☰** → **Update subscription** → connect
+
+### iOS — Shadowrocket
+1. Tap **+** → Type: **Subscribe**
+2. Paste URL → Save → **Update**
+
+### Windows — V2RayN / Hiddify
+1. **Subscriptions** → **Add subscription URL**
+2. Paste → OK → **Update subscriptions**
+
+### Telegram Bot Integration
+Use the raw URL directly as a subscription source in your bot.
+The file contains one config per line with no headers — standard format.
+
+```
+https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/config.txt
+```
+
+### CLI / curl
+```bash
+curl -s https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/config.txt | head -20
+```
+
+---
+
+## 🔄 How It Works
+
+```
+Every 30 min — GitHub Actions (free)
+        │
+        ├── Scrape 180+ Telegram channels (t.me/s/...)
+        │         └── parse <code> tags for v2ray configs
+        │
+        ├── Fetch 20 GitHub aggregator repos (raw .txt files)
+        │         └── decode base64 if needed
+        │
+        ├── Deduplication
+        │         ├── Pass 1: exact string match
+        │         └── Pass 2: UUID / identifier match
+        │
+        ├── Cap at 2,000 configs
+        │
+        └── Write config.txt → auto-commit → push
+```
+
+---
+
+## 🔍 Search Keywords
+
+`v2ray config` · `free v2ray subscription` · `vless config free` · `vmess config`
+`trojan config free` · `v2ray sub link` · `shadowsocks config` · `v2rayNG subscription`
+`free vpn config 2026` · `v2ray subscription url` · `xray config` · `free proxy config`
+`کانفیگ رایگان` · `سابسکریپشن v2ray` · `کانفیگ vless` · `لینک سابسکریپشن`
 
 ---
 
 ## ⚠️ Disclaimer
 
 Configs are collected from **publicly available** Telegram channels and GitHub repositories.
-Use responsibly and in accordance with the laws of your country.
+Use responsibly and in accordance with your local laws.
 
 ---
 
-⭐ **Star this repo** to support the project and stay updated!
+⭐ Star the repo if it helped you!

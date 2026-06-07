@@ -3,7 +3,8 @@ V2Ray Config Aggregator
 Fetches vmess/vless/ss/trojan configs from:
   - 180+ public Telegram channel web-previews
   - Top GitHub aggregator repos (raw subscription files)
-Deduplicates and writes to config.txt every 15 minutes via GitHub Actions.
+Output: pure raw (one config per line, no headers) — compatible with any client or bot.
+Updated every 30 minutes via GitHub Actions cron.
 """
 
 import base64
@@ -17,6 +18,8 @@ import jdatetime
 # ── Constants ────────────────────────────────────────────────────────────────
 
 SCHEMES = ("vmess://", "vless://", "ss://", "trojan://")
+
+MAX_CONFIGS = 2000   # hard cap after dedup
 
 HEADERS = {
     "User-Agent": (
@@ -419,32 +422,27 @@ def main():
             seen_uuid.add(uid)
         unique.append(cfg)
 
-    # ── Timestamp ─────────────────────────────────────────────────────────────
-    now = jdatetime.datetime.now(pytz.timezone("Asia/Tehran"))
-    date_str = now.strftime("%Y/%m/%d")
-    time_str = now.strftime("%H:%M")
+    # ── Apply hard cap ────────────────────────────────────────────────────────
+    if len(unique) > MAX_CONFIGS:
+        unique = unique[:MAX_CONFIGS]
+        print(f"  (capped at {MAX_CONFIGS})")
 
-    # ── Write output ──────────────────────────────────────────────────────────
-    header = (
-        f"# ✅ به‌روزرسانی: {date_str} ساعت {time_str} | {len(unique)} کانفیگ یکتا\n"
-        f"# 📡 منابع: {len(TELEGRAM_SOURCES)} کانال تلگرام + {len(GITHUB_SOURCES)} ریپوی گیتهاب\n"
-        f"# 🔗 سابسکریپشن: https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/config.txt\n"
-    )
-
+    # ── Write pure raw output (no comment headers — bot/client compatible) ────
     with open("config.txt", "w", encoding="utf-8") as f:
-        f.write(header)
         for i, cfg in enumerate(unique, start=1):
             label = f"#@Alirewa - #{i}"
             f.write(f"{cfg}{label}\n")
 
+    now = jdatetime.datetime.now(pytz.timezone("Asia/Tehran"))
     print(f"\n{'='*55}")
-    print(f" ✅ Done!")
-    print(f"    Telegram      : {tg_total:>6} raw")
-    print(f"    GitHub        : {gh_total:>6} raw")
-    print(f"    Total raw     : {len(all_configs):>6}")
+    print(f" ✅ Done!  [{now.strftime('%Y/%m/%d %H:%M')}]")
+    print(f"    Telegram       : {tg_total:>6} raw")
+    print(f"    GitHub         : {gh_total:>6} raw")
+    print(f"    Total raw      : {len(all_configs):>6}")
     print(f"    After str-dedup: {len(after_raw):>5}")
-    print(f"    UUID dupes    : {uuid_dupes:>6}")
-    print(f"    Final unique  : {len(unique):>6}  → saved to config.txt")
+    print(f"    UUID dupes     : {uuid_dupes:>6}")
+    print(f"    Final (capped) : {len(unique):>6}  → config.txt")
+    print(f"{'='*55}\n")
     print(f"    Total raw : {len(all_configs):>6}")
     print(f"    Unique    : {len(unique):>6}  →  saved to config.txt")
     print(f"{'='*55}\n")
