@@ -15,31 +15,33 @@
 
 ## ⚡ Subscription Links
 
-### 📦 Main — 2000 configs (full pool)
+### 📦 Main — 2000 configs (raw, one per line)
 
 ```
 https://raw.githubusercontent.com/Alirewa/V2ray-Configs/main/config.txt
 ```
 
-### ⭐ Sub 1 — Top 100 (TLS / REALITY priority)
+### ⭐ Sub 1 — Top 100 · **Base64** · TLS / REALITY priority
 
 ```
 https://raw.githubusercontent.com/Alirewa/V2ray-Configs/main/sub1.txt
 ```
 
-### ✅ Sub 2 — Next 100 (high quality)
+### ✅ Sub 2 — Next 100 · **Base64** · high quality
 
 ```
 https://raw.githubusercontent.com/Alirewa/V2ray-Configs/main/sub2.txt
 ```
 
-### 🔹 Sub 3 — Next 100 (good quality)
+### 🔹 Sub 3 — Next 100 · **Base64** · good quality
 
 ```
 https://raw.githubusercontent.com/Alirewa/V2ray-Configs/main/sub3.txt
 ```
 
-> **Format:** one config per line — raw, no headers. Paste directly into any V2Ray client or Telegram proxy bot.
+> **sub1 / sub2 / sub3** are **base64-encoded** — paste the URL directly into any client's subscription field (v2rayNG, Shadowrocket, Hiddify, Nekoray, v2rayN…).
+>
+> **config.txt** is raw (one config per line) — for bots or clients that prefer plain text.
 
 ---
 

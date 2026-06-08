@@ -278,6 +278,33 @@ def _is_valid(cfg: str) -> bool:
     return any(cfg.startswith(s) for s in SCHEMES) and len(cfg) > 20
 
 
+_BAD_PERCENT = re.compile(r"%(?![0-9A-Fa-f]{2})")   # % not followed by 2 hex digits
+
+def _is_clean_uri(cfg: str) -> bool:
+    """
+    Return False for configs that will cause client parse errors:
+      - Unencoded spaces in the URI (before the # fragment)
+      - Broken percent-encoding like %& or %x
+      - Configs with unencoded curly braces / double-quotes in params
+        (JSON embedded in URL — accepted only by newer Xray, breaks most clients)
+    """
+    uri_part = cfg.split("#")[0]
+
+    # Space in URI
+    if " " in uri_part:
+        return False
+
+    # Broken percent-encoding
+    if _BAD_PERCENT.search(uri_part):
+        return False
+
+    # JSON / curly braces in params (breaks older clients)
+    if "{" in uri_part or "}" in uri_part:
+        return False
+
+    return True
+
+
 _IP_RE = re.compile(r"@(\d{1,3}\.){3}\d{1,3}:")
 
 def _health_score(cfg: str) -> int:
@@ -479,25 +506,31 @@ def main():
         unique = unique[:MAX_CONFIGS]
 
     # ── Score all configs — best first ───────────────────────────────────────
-    # Sort by score descending; preserve original order for ties (stable sort)
     scored = sorted(unique, key=_health_score, reverse=True)
 
-    # ── Write main config.txt (raw, no comments) ──────────────────────────────
+    # ── Clean pool for sub files (strict URI validation) ─────────────────────
+    clean = [cfg for cfg in scored if _is_clean_uri(cfg)]
+    invalid_count = len(scored) - len(clean)
+
+    # ── Write main config.txt (raw, one per line — no header comments) ────────
+    # Label: simple, no spaces, no double-#
     with open("config.txt", "w", encoding="utf-8") as f:
         for i, cfg in enumerate(unique, start=1):
-            f.write(f"{cfg}#@Alirewa - #{i}\n")
+            f.write(f"{cfg}#@Alirewa-{i}\n")
 
-    # ── Write sub1 / sub2 / sub3 (100 each, drawn from the scored list) ───────
-    # Always fill to 100: if scored pool runs short, pad from the remainder of unique
+    # ── Write sub1 / sub2 / sub3 ─────────────────────────────────────────────
+    # Each sub: 100 clean configs, quality-ranked, base64-encoded for client compatibility.
+    # base64(raw_lines) is the subscription format accepted by ALL clients:
+    #   v2rayNG, Shadowrocket, Nekoray, v2rayN, Hiddify, ClashMeta, etc.
     used: set[str] = set()
     sub_pools: list[list[str]] = []
     for _ in range(3):
         pool: list[str] = []
-        for cfg in scored:
+        for cfg in clean:
             if cfg not in used and len(pool) < 100:
                 pool.append(cfg)
                 used.add(cfg)
-        # If scored list exhausted, fill from unsorted unique
+        # If clean pool exhausted pad from all unique
         if len(pool) < 100:
             for cfg in unique:
                 if cfg not in used and len(pool) < 100:
@@ -508,20 +541,26 @@ def main():
     for idx, (fname, pool) in enumerate(
         zip(["sub1.txt", "sub2.txt", "sub3.txt"], sub_pools), start=1
     ):
+        # Build raw lines with clean label (no spaces, no double-#)
+        raw_lines = "\n".join(
+            f"{cfg}#@Alirewa-S{idx}-{i}" for i, cfg in enumerate(pool, start=1)
+        )
+        # Base64-encode → universally accepted by all clients
+        encoded = base64.b64encode(raw_lines.encode("utf-8")).decode("ascii")
         with open(fname, "w", encoding="utf-8") as f:
-            for i, cfg in enumerate(pool, start=1):
-                f.write(f"{cfg}#@Alirewa - Sub{idx} #{i}\n")
+            f.write(encoded)
 
     now = jdatetime.datetime.now(pytz.timezone("Asia/Tehran"))
     print(f"\n{'='*55}")
     print(f" Done!  [{now.strftime('%Y/%m/%d %H:%M')}]")
-    print(f"    Telegram       : {tg_total:>6} raw")
-    print(f"    GitHub         : {gh_total:>6} raw")
-    print(f"    Total raw      : {len(all_configs):>6}")
-    print(f"    After str-dedup: {len(after_raw):>5}")
-    print(f"    UUID dupes     : {uuid_dupes:>6}")
-    print(f"    Final (capped) : {len(unique):>6}  -> config.txt")
-    print(f"    sub1/2/3       : 100 each  -> quality-ranked")
+    print(f"    Telegram        : {tg_total:>6} raw")
+    print(f"    GitHub          : {gh_total:>6} raw")
+    print(f"    Total raw       : {len(all_configs):>6}")
+    print(f"    After str-dedup : {len(after_raw):>5}")
+    print(f"    UUID dupes      : {uuid_dupes:>6}")
+    print(f"    Final (capped)  : {len(unique):>6} -> config.txt (raw)")
+    print(f"    URI-invalid     : {invalid_count:>6} filtered from subs")
+    print(f"    sub1/2/3        : 100 each  -> base64-encoded")
     print(f"{'='*55}\n")
 
 
