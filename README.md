@@ -4,9 +4,9 @@
 
 > Free, fresh V2Ray & Xray subscription links — updated every 30 minutes from 180+ Telegram channels and verified GitHub sources. No login. No ads. Just copy and use.
 
-[![Auto-Updated](https://img.shields.io/badge/Updated-Every_30_min-4ade80?style=for-the-badge)](https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/config.txt)
-[![Sources](https://img.shields.io/badge/Sources-180%2B_Channels-2CA5E0?style=for-the-badge)](https://github.com/Alirewa/v2ray-configs)
-[![Configs](https://img.shields.io/badge/Configs-2000%2B-orange?style=for-the-badge)](https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/config.txt)
+[![Auto-Updated](https://img.shields.io/badge/Updated-Every_30_min-4ade80?style=for-the-badge)](https://raw.githubusercontent.com/Alirewa/V2ray-Configs/main/config.txt)
+[![Sources](https://img.shields.io/badge/Sources-180%2B_Channels-2CA5E0?style=for-the-badge)](https://github.com/Alirewa/V2ray-Configs)
+[![Configs](https://img.shields.io/badge/Configs-2000%2B-orange?style=for-the-badge)](https://raw.githubusercontent.com/Alirewa/V2ray-Configs/main/config.txt)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
 </div>
@@ -18,25 +18,25 @@
 ### 📦 Main — 2000 configs (full pool)
 
 ```
-https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/config.txt
+https://raw.githubusercontent.com/Alirewa/V2ray-Configs/main/config.txt
 ```
 
 ### ⭐ Sub 1 — Top 100 (TLS / REALITY priority)
 
 ```
-https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/sub1.txt
+https://raw.githubusercontent.com/Alirewa/V2ray-Configs/main/sub1.txt
 ```
 
 ### ✅ Sub 2 — Next 100 (high quality)
 
 ```
-https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/sub2.txt
+https://raw.githubusercontent.com/Alirewa/V2ray-Configs/main/sub2.txt
 ```
 
 ### 🔹 Sub 3 — Next 100 (good quality)
 
 ```
-https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/sub3.txt
+https://raw.githubusercontent.com/Alirewa/V2ray-Configs/main/sub3.txt
 ```
 
 > **Format:** one config per line — raw, no headers. Paste directly into any V2Ray client or Telegram proxy bot.
