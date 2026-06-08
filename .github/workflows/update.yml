@@ -2,8 +2,8 @@ name: Fetch V2Ray Configs
 
 on:
   schedule:
-    - cron: "0 * * * *"   # top of every hour
-    - cron: "30 * * * *"  # half past every hour
+    - cron: "7 * * * *"   # 7 past every hour
+    - cron: "37 * * * *"  # 37 past every hour
   workflow_dispatch:
 
 jobs:

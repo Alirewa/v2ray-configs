@@ -2,9 +2,9 @@
 
 # 🔒 Free V2Ray / Xray Configs
 
-> Free, fresh, and ready-to-use V2Ray & Xray subscription links — auto-updated every 30 minutes from 180+ Telegram channels and verified GitHub sources. No login. No ads. Just copy and use.
+> Free, fresh V2Ray & Xray subscription links — updated every 30 minutes from 180+ Telegram channels and verified GitHub sources. No login. No ads. Just copy and use.
 
-[![Auto-Updated](https://img.shields.io/badge/Auto--Updated-Every_30_min-4ade80?style=for-the-badge)](https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/config.txt)
+[![Auto-Updated](https://img.shields.io/badge/Updated-Every_30_min-4ade80?style=for-the-badge)](https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/config.txt)
 [![Sources](https://img.shields.io/badge/Sources-180%2B_Channels-2CA5E0?style=for-the-badge)](https://github.com/Alirewa/v2ray-configs)
 [![Configs](https://img.shields.io/badge/Configs-2000%2B-orange?style=for-the-badge)](https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/config.txt)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
@@ -15,49 +15,43 @@
 
 ## ⚡ Subscription Links
 
-### Main — 2000 configs (full pool)
+### 📦 Main — 2000 configs (full pool)
 
 ```
 https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/config.txt
 ```
 
-### Sub 1 — Top 100 (highest quality, TLS/REALITY priority)
+### ⭐ Sub 1 — Top 100 (TLS / REALITY priority)
 
 ```
 https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/sub1.txt
 ```
 
-### Sub 2 — Next 100 (high quality)
+### ✅ Sub 2 — Next 100 (high quality)
 
 ```
 https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/sub2.txt
 ```
 
-### Sub 3 — Next 100 (good quality)
+### 🔹 Sub 3 — Next 100 (good quality)
 
 ```
 https://raw.githubusercontent.com/Alirewa/v2ray-configs/main/sub3.txt
 ```
 
-> One config per line — raw format, directly usable in any V2Ray / Xray client or Telegram bot.
+> **Format:** one config per line — raw, no headers. Paste directly into any V2Ray client or Telegram proxy bot.
 
 ---
 
 ## 📋 Table of Contents
 
-- [Overview](#-overview)
 - [Stats](#-stats)
 - [Supported Protocols](#-supported-protocols)
 - [Compatible Clients](#-compatible-clients)
 - [How to Use](#-how-to-use)
 - [How It Works](#-how-it-works)
+- [Keywords](#-keywords)
 - [License](#-license)
-
----
-
-## 📖 Overview
-
-This repository provides a **free, automatically maintained** collection of V2Ray and Xray proxy configurations. The configs are scraped from 180+ public Telegram channels and top GitHub aggregators, deduplicated, and refreshed every 30 minutes via a GitHub Actions workflow — so you always get fresh, working configs.
 
 ---
 
@@ -68,12 +62,12 @@ This repository provides a **free, automatically maintained** collection of V2Ra
 | 🔄 Update interval | Every 30 minutes |
 | 📡 Sources | 180+ Telegram channels + 20 GitHub repos |
 | 🔢 Main pool | 2,000 configs (after full deduplication) |
-| ⭐ Sub files | sub1/sub2/sub3 — 100 quality-ranked configs each |
-| 🧹 Dedup method | Exact string + UUID/identifier matching |
-| 📄 Output format | Raw — one config per line (bot/client ready) |
+| ⭐ Sub files | sub1 / sub2 / sub3 — 100 quality-ranked configs each |
+| 🧹 Dedup | Exact string match + UUID/identifier dedup |
+| 📄 Format | Raw — one config per line (bot & client ready) |
 | 🆓 Cost | Free forever |
 
-### Quality Score (for sub files)
+### Quality Scoring (sub files)
 
 | Signal | Points |
 |--------|--------|
@@ -81,7 +75,7 @@ This repository provides a **free, automatically maintained** collection of V2Ra
 | `security=tls` or `trojan://` | +3 |
 | Port 443 or 8443 | +2 |
 | Domain name (not raw IP) | +2 |
-| SNI / Host header set | +1 |
+| SNI / Host header present | +1 |
 | WebSocket / path set | +1 |
 
 ---
@@ -94,8 +88,6 @@ This repository provides a **free, automatically maintained** collection of V2Ra
 | VMess | ✅ |
 | Trojan | ✅ |
 | Shadowsocks | ✅ |
-| WireGuard | ✅ |
-| Hysteria2 | ✅ |
 
 ---
 
@@ -108,36 +100,52 @@ This repository provides a **free, automatically maintained** collection of V2Ra
 | Windows | v2rayN, Hiddify |
 | macOS | V2Box, Hiddify |
 | Linux | v2ray-core, Xray-core |
+| Telegram Bot | Any bot accepting raw subscription URLs |
 
 ---
 
 ## 🚀 How to Use
 
-1. Copy the subscription link above
+1. Copy one of the subscription links above
 2. Open your V2Ray / Xray client
 3. Add a new **subscription** and paste the link
 4. Click **Update** — done!
+
+**For Telegram bots:** paste the raw link directly — no conversion needed.
 
 ---
 
 ## ⚙️ How It Works
 
-1. A scheduled GitHub Actions workflow runs every 30 minutes
-2. It scrapes configured Telegram channels and GitHub sources
-3. Configs are deduplicated by exact string and UUID
-4. The cleaned list is written to `config.txt` and committed
-5. The raw file URL is always up-to-date and ready to use
+1. A scheduled workflow runs every 30 minutes
+2. It fetches configs from 180+ Telegram channels and 20 GitHub sources
+3. Configs are deduplicated (exact match + UUID)
+4. Quality score is calculated for each config
+5. Top 300 results are split into sub1 / sub2 / sub3 (100 each)
+6. All 2000 results go into `config.txt`
+7. Changes are committed and pushed automatically
+
+---
+
+## 🔍 Keywords
+
+`v2ray config` · `free v2ray subscription` · `vless config free` · `vmess config`
+`trojan config free` · `v2ray sub link` · `shadowsocks config` · `v2rayNG subscription`
+`free vpn config 2025` · `v2ray subscription url` · `xray config` · `free proxy config`
+`کانفیگ رایگان` · `سابسکریپشن v2ray` · `کانفیگ vless رایگان` · `فیلترشکن رایگان`
 
 ---
 
 ## 📄 License
 
-Distributed under the **MIT License** — free to use, modify, and distribute.
+MIT — free to use, share, and modify.
 
 ---
 
 <div align="center">
 
-Made with ❤️ by [Alirewa](https://github.com/Alirewa)
+Made by [Alirewa](https://github.com/Alirewa)
+
+⭐ Star this repo if it helped you!
 
 </div>
